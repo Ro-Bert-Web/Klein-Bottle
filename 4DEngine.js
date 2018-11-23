@@ -131,7 +131,7 @@ class object{
 
 		return result;
 	}
-	draw(ctx, translation, color){
+	draw(ctx, translation, color, width){
 		for(let i = 0; i < this.edge.length; i++){
 			let p;
 			let vrtx1 = this.vrtx[this.edge[i][0]];
@@ -170,8 +170,8 @@ class object{
 				[0, 0, 0, 0]
 			));
 
-			vrtx1.scale(ctx.width / 800);
-			vrtx2.scale(ctx.width / 800);
+			vrtx1.scale(width / 800);
+			vrtx2.scale(width / 800);
 			ctx.beginPath();
 			ctx.strokeStyle = color;
 			ctx.moveTo(vrtx1.x + translation.x, vrtx1.y + translation.y);
@@ -208,6 +208,6 @@ class Window4D{
 		this.ctx.stroke();
 	}
 	draw(rendering, color = "#000000"){
-		rendering.draw(this.ctx, this.translation, color);
+		rendering.draw(this.ctx, this.translation, color, this.width);
 	}
 }
