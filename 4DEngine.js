@@ -170,6 +170,8 @@ class object{
 				[0, 0, 0, 0]
 			));
 
+			vrtx1.scale(ctx.width / 800);
+			vrtx2.scale(ctx.width / 800);
 			ctx.beginPath();
 			ctx.strokeStyle = color;
 			ctx.moveTo(vrtx1.x + translation.x, vrtx1.y + translation.y);
