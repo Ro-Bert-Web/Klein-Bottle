@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>
+			Ramp
+		</title>
+	</head>
+	<body>
+		<script src = "4DEngine.js"></script>
+		<script type="text/javascript">
+
+let display = new Window4D();
+
+let hypercube = new object();
+
+hypercube.addVertex(new vector4(-1, -1, 1, -1));
+hypercube.addVertex(new vector4(-1, -1, 1,  1));
+hypercube.addVertex(new vector4(-1, -1, 3, -1));
+hypercube.addVertex(new vector4(-1, -1, 3,  1));
+hypercube.addVertex(new vector4(-1,  1, 1, -1));
+hypercube.addVertex(new vector4(-1,  1, 1,  1));
+hypercube.addVertex(new vector4(-1,  1, 3, -1));
+hypercube.addVertex(new vector4(-1,  1, 3,  1));
+hypercube.addVertex(new vector4( 1, -1, 1, -1));
+hypercube.addVertex(new vector4( 1, -1, 1,  1));
+hypercube.addVertex(new vector4( 1, -1, 3, -1));
+hypercube.addVertex(new vector4( 1, -1, 3,  1));
+hypercube.addVertex(new vector4( 1,  1, 1, -1));
+hypercube.addVertex(new vector4( 1,  1, 1,  1));
+hypercube.addVertex(new vector4( 1,  1, 3, -1));
+hypercube.addVertex(new vector4( 1,  1, 3,  1));
+
+for(let i = 0; i < hypercube.vrtx.length - 1; i++){
+	for(let j = i + 1; j < hypercube.vrtx.length; j++){
+		let distance = hypercube.vrtx[i].shift(hypercube.vrtx[j].scale(-1)).getMag();
+		if(distance == 2){
+			hypercube.addEdge(i, j);
+		}
+	}
+}
+
+
+let hyperramp = new object();
+
+hyperramp.addVertex(new vector4(-1, -1, -1, -1));
+hyperramp.addVertex(new vector4(-1, -1,  1, -1));
+hyperramp.addVertex(new vector4(-1,  1, -1, -1));
+hyperramp.addVertex(new vector4(-1,  1,  1, -1));
+hyperramp.addVertex(new vector4( 1, -1, -1, -1));
+hyperramp.addVertex(new vector4( 1, -1,  1, -1));
+hyperramp.addVertex(new vector4( 1,  1, -1, -1));
+hyperramp.addVertex(new vector4( 1,  1,  1, -1));
+hyperramp.addVertex(new vector4(-1, -1,  1,  1));
+hyperramp.addVertex(new vector4(-1,  1,  1,  1));
+hyperramp.addVertex(new vector4( 1, -1,  1,  1));
+hyperramp.addVertex(new vector4( 1,  1,  1,  1));
+
+for(let i = 0; i < hyperramp.vrtx.length - 1; i++){
+	for(let j = i + 1; j < hyperramp.vrtx.length; j++){
+		let distance = hyperramp.vrtx[i].shift(hyperramp.vrtx[j].scale(-1)).getMag();
+		let vrtx1 = hyperramp.vrtx[i];
+		let vrtx2 = hyperramp.vrtx[j];
+		if(distance == 2){
+			hyperramp.addEdge(i, j);
+		}
+		if(vrtx1.x == vrtx2.x && vrtx1.y == vrtx2.y && vrtx1.z != vrtx2.z && vrtx1.w != vrtx2.w){
+			hyperramp.addEdge(i, j);
+		}
+	}
+}
+
+let angle = 0.015;
+let rotationXZ = new matrix4(
+	[Math.cos(angle), 0, -Math.sin(angle), 0],
+	[0,               1, 0,                0],
+	[Math.sin(angle), 0, Math.cos(angle),  0],
+	[0,               0, 0,                1]
+);
+angle = 0.005;
+let rotationYW = new matrix4(
+	[1, 0,               0,                0],
+	[0, Math.cos(angle), 0, -Math.sin(angle)],
+	[0, 0,               1,                0],
+	[0, Math.sin(angle), 0,  Math.cos(angle)]
+);
+
+display.translate(new vector4(0, 0, 10, 2));
+
+let shifting = 0;
+function update(){
+	display.translate(new vector4(0, 0, 0, shifting));
+	hypercube = hypercube.matMult(rotationXZ).matMult(rotationYW);
+	hyperramp = hyperramp.matMult(rotationXZ).matMult(rotationYW);
+	display.clear();
+	display.draw(hypercube);
+	display.draw(hyperramp);
+}
+
+setInterval(update, 20);
+
+document.onkeydown = function(event){
+	let key = event.keyCode;
+	if(key == 38){
+		shifting = -0.02;
+	}
+	else if(key == 40){
+		shifting = 0.02;
+	}
+	else{
+		alert(key);
+	}
+}
+
+document.onkeyup = function(event){
+	let key = event.keyCode;
+	if(key == 38 || key == 40){
+		shifting = 0;
+	}
+	else{}
+}
+
+		</script>
+	</body>
+</html>

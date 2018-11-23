@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>
+			Rotations
+		</title>
+	</head>
+	<body>
+		<script src = "4DEngine.js"></script>
+		<script type="text/javascript">
+
+let display = new Window4D();
+
+let square = new object();
+square.addVertex(new vector4(-1, -1, 0, 0));
+square.addVertex(new vector4(-1,  1, 0, 0));
+square.addVertex(new vector4( 1, -1, 0, 0));
+square.addVertex(new vector4( 1,  1, 0, 0));
+square.addEdge(0, 1);
+square.addEdge(0, 2);
+square.addEdge(1, 3);
+square.addEdge(2, 3);
+
+angle = 0.01;
+let rotationYZ = new matrix4(
+	[1,               0,                0, 0],
+	[0, Math.cos(angle), -Math.sin(angle), 0],
+	[0, Math.sin(angle),  Math.cos(angle), 0],
+	[0,               0,                0, 1]
+);
+
+display.translate(new vector4(0, 0, 10, 2));
+
+function update(){
+	square = square.matMult(rotationYZ);
+	display.clear();
+	display.draw(square);
+}
+
+setInterval(update, 20);
+
+		</script>
+	</body>
+</html>

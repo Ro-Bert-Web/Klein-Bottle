@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>
+			Hypercube Static
+		</title>
+	</head>
+	<body>
+		<script src = "4DEngine.js"></script>
+		<script type="text/javascript">
+
+let display = new Window4D();
+
+let cross = new object();
+
+cross.addVertex(new vector4(-3,  -1, -2, 3));
+cross.addVertex(new vector4(-3,   1, -2, 3));
+cross.addVertex(new vector4(-3,   1, -4, 3));
+cross.addVertex(new vector4(-3,  -1, -4, 3));
+
+let klein = new object();
+
+{//Rotate XZ
+	let a = Math.PI / 8;
+	let center = new vector4(-3, 0, 0, 0);
+	let rotation = new matrix4(
+		[ Math.cos(a), 0, Math.sin(a), 0],
+		[			0, 1, 			0, 0],
+		[-Math.sin(a), 0, Math.cos(a), 0],
+		[			0, 0, 			0, 1]
+	);
+	for(let i = 0; i < Math.PI; i += a){
+		klein.vrtx.push(...cross.vrtx);
+		cross = cross.shift(center.scale(-1)).matMult(rotation).shift(center);
+	}
+}
+{//Rotate XZ
+	let a = Math.PI / 8;
+	let center = new vector4(-3, 0, 6, 0);
+	let rotation = new matrix4(
+		[Math.cos(a), 0, -Math.sin(a), 0],
+		[		   0, 1,			0, 0],
+		[Math.sin(a), 0,  Math.cos(a), 0],
+		[		   0, 0,			0, 1]
+	);
+	for(let i = 0; i < Math.PI / 2; i += a){
+		klein.vrtx.push(...cross.vrtx);
+		cross = cross.shift(center.scale(-1)).matMult(rotation).shift(center);
+	}
+}
+{//Rotate ZW
+	let a = Math.PI / 8;
+	let center = new vector4(0, 0, 6, 0);
+	let rotation = new matrix4(
+		[1, 0,			  0,		   0],
+		[0, 1,			  0,		   0],
+		[0, 0,  Math.cos(a), Math.sin(a)],
+		[0, 0, -Math.sin(a), Math.cos(a)]
+	);
+	for(let i = 0; i < Math.PI; i += a){
+		klein.vrtx.push(...cross.vrtx);
+		cross = cross.shift(center.scale(-1)).matMult(rotation).shift(center);
+	}
+}
+{//Rotate XZ
+	let a = Math.PI / 8;
+	let center = new vector4(3, 0, 6, 0);
+	let rotation = new matrix4(
+		[Math.cos(a), 0, -Math.sin(a), 0],
+		[		   0, 1,			0, 0],
+		[Math.sin(a), 0,  Math.cos(a), 0],
+		[		   0, 0,			0, 1]
+	);
+	for(let i = 0; i < Math.PI / 2; i += a){
+		klein.vrtx.push(...cross.vrtx);
+		cross = cross.shift(center.scale(-1)).matMult(rotation).shift(center);
+	}
+}
+{//Rotate XZ
+	let a = Math.PI / 8;
+	let center = new vector4(3, 0, 0, 0);
+	let rotation = new matrix4(
+		[ Math.cos(a), 0, Math.sin(a), 0],
+		[			0, 1, 			0, 0],
+		[-Math.sin(a), 0, Math.cos(a), 0],
+		[			0, 0, 			0, 1]
+	);
+	for(let i = 0; i < Math.PI; i += a){
+		klein.vrtx.push(...cross.vrtx);
+		cross = cross.shift(center.scale(-1)).matMult(rotation).shift(center);
+	}
+}
+{//Shift
+	let vector = new vector4(-6 / 4, 0, 0, 6 / 4);
+	for(let i = 0; i < 4; i++){
+		klein.vrtx.push(...cross.vrtx);
+		cross = cross.shift(vector);
+	}
+}
+for(let i = 0; i < klein.vrtx.length; i++){
+	klein.addEdge(i, (i + 1) % klein.vrtx.length);
+	klein.addEdge(i, (i + 4) % klein.vrtx.length);
+}
+
+
+
+
+
+let obj = new object();
+
+obj.addVertex(new vector4(-0.5, -0.5, -0.5, 0));
+obj.addVertex(new vector4(-0.5, -0.5,  0.5, 0));
+obj.addVertex(new vector4(-0.5,  0.5, -0.5, 0));
+obj.addVertex(new vector4(-0.5,  0.5,  0.5, 0));
+obj.addVertex(new vector4( 0.5, -0.5, -0.5, 0));
+obj.addVertex(new vector4( 0.5, -0.5,  0.5, 0));
+obj.addVertex(new vector4( 0.5,  0.5, -0.5, 0));
+obj.addVertex(new vector4( 0.5,  0.5,  0.5, 0));
+
+obj.addVertex(new vector4(-1.5,    0,    0, 0));
+obj.addVertex(new vector4(   0,    0,  1.5, 0));
+obj.addVertex(new vector4(   0, -1.5,    0, 0));
+
+obj.addEdge(8, 0);
+obj.addEdge(8, 1);
+obj.addEdge(8, 2);
+obj.addEdge(8, 3);
+
+obj.addEdge(9, 1);
+obj.addEdge(9, 3);
+obj.addEdge(9, 5);
+obj.addEdge(9, 7);
+
+obj.addEdge(10, 0);
+obj.addEdge(10, 1);
+obj.addEdge(10, 4);
+obj.addEdge(10, 5);
+
+for(let i = 0; i < obj.vrtx.length - 1; i++){
+	for(let j = i + 1; j < obj.vrtx.length; j++){
+		if(obj.vrtx[i].shift(obj.vrtx[j].scale(-1)).getMag() == 1){
+			obj.addEdge(i, j);
+		}
+	}
+}
+
+obj = obj.shift(new vector4(-3, 0, -3, 3));
+
+
+
+let level = 0;
+let frames = [32, 16, 32, 16, 32, 16];
+let frame = frames[0];
+
+function movement(){
+	if(frame > 0){
+		if(level == 0){//Rotate XZ
+			let a = Math.PI / 32;
+			let center = new vector4(-3, 0, 0, 0);
+			let rotation = new matrix4(
+				[ Math.cos(a), 0, Math.sin(a), 0],
+				[			0, 1, 			0, 0],
+				[-Math.sin(a), 0, Math.cos(a), 0],
+				[			0, 0, 			0, 1]
+			);
+			obj = obj.shift(center.scale(-1)).matMult(rotation).shift(center);
+		}
+		if(level == 1){//Rotate XZ
+			let a = Math.PI / 32;
+			let center = new vector4(-3, 0, 6, 0);
+			let rotation = new matrix4(
+				[Math.cos(a), 0, -Math.sin(a), 0],
+				[		   0, 1,			0, 0],
+				[Math.sin(a), 0,  Math.cos(a), 0],
+				[		   0, 0,			0, 1]
+			);
+			obj = obj.shift(center.scale(-1)).matMult(rotation).shift(center);
+		}
+		if(level == 2){//Rotate ZW
+			let a = Math.PI / 32;
+			let center = new vector4(0, 0, 6, 0);
+			let rotation = new matrix4(
+				[1, 0,			  0,		   0],
+				[0, 1,			  0,		   0],
+				[0, 0,  Math.cos(a), Math.sin(a)],
+				[0, 0, -Math.sin(a), Math.cos(a)]
+			);
+			obj = obj.shift(center.scale(-1)).matMult(rotation).shift(center);
+		}
+		if(level == 3){//Rotate XZ
+			let a = Math.PI / 32;
+			let center = new vector4(3, 0, 6, 0);
+			let rotation = new matrix4(
+				[Math.cos(a), 0, -Math.sin(a), 0],
+				[		   0, 1,			0, 0],
+				[Math.sin(a), 0,  Math.cos(a), 0],
+				[		   0, 0,			0, 1]
+			);
+			obj = obj.shift(center.scale(-1)).matMult(rotation).shift(center);
+		}
+		if(level == 4){//Rotate XZ
+			let a = Math.PI / 32;
+			let center = new vector4(3, 0, 0, 0);
+			let rotation = new matrix4(
+				[ Math.cos(a), 0, Math.sin(a), 0],
+				[			0, 1, 			0, 0],
+				[-Math.sin(a), 0, Math.cos(a), 0],
+				[			0, 0, 			0, 1]
+			);
+			obj = obj.shift(center.scale(-1)).matMult(rotation).shift(center);
+		}
+		if(level == 5){
+			let vector = new vector4(-6 / 16, 0, 0, 6 / 16);
+			obj = obj.shift(vector);
+		}
+
+		frame--;
+		if(frame == 0){
+			level++;
+			level %= 6;
+			frame = frames[level];
+		}
+	}
+}
+
+document.onkeydown = function (e){
+	let key = e.keyCode;
+	if(key == 38){
+		movement();
+	}
+	else if(key == 32){
+		projectW = !projectW;
+		if(projectW == true){
+			display.setTranslation(new vector4(0, 0, 15, 5));
+		}
+		else{
+			display.setTranslation(new vector4(0, 0, 30, 0));
+		}
+	}
+	else{
+		// alert(key);
+	}
+};
+
+display.setTranslation(new vector4(0, 0, 15, 5));
+
+
+
+
+
+let rot = 0;
+
+function update(){
+	let view = new matrix4(
+		[1,						0,						0, 0],
+		[0, Math.cos(Math.PI / 6), -Math.sin(Math.PI / 6), 0],
+		[0, Math.sin(Math.PI / 6),  Math.cos(Math.PI / 6), 0],
+		[0,						0,						0, 1]
+	).mult(new matrix4(
+		[ Math.cos(rot), 0, Math.sin(rot), 0],
+		[			  0, 1, 			0, 0],
+		[-Math.sin(rot), 0, Math.cos(rot), 0],
+		[			  0, 0, 			0, 1]
+	));
+
+	display.clear();
+	display.draw(klein.matMult(view), "#888888");
+	display.draw(obj.matMult(view));
+
+	rot += 0.002;
+}
+
+setInterval(update, 20);
+		</script>
+	</body>
+</html>
