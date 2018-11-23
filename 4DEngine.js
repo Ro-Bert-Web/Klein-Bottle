@@ -208,6 +208,6 @@ class Window4D{
 		this.ctx.stroke();
 	}
 	draw(rendering, color = "#000000"){
-		rendering.draw(this.ctx, this.translation, color, this.width);
+		rendering.draw(this.ctx, this.translation, color, this.canvas.width);
 	}
 }
